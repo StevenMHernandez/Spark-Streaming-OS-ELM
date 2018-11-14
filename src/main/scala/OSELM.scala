@@ -1,12 +1,17 @@
 import org.apache.spark._
 import breeze.linalg._
 import breeze.numerics._
-import breeze.stats.distributions.Rand
+import breeze.stats.distributions.{Rand, RandBasis, ThreadLocalRandomGenerator}
+import org.apache.commons.math3.random.MersenneTwister
+import org.apache.log4j.{Level, Logger}
 
 object OSELM {
   val L_HIDDEN_NODES = 50
 
   def main(args: Array[String]): Unit = {
+    Logger.getLogger("org").setLevel(Level.OFF)
+    Logger.getLogger("akka").setLevel(Level.OFF)
+
     val conf = new SparkConf()
     conf.setMaster("local")
     conf.setAppName("Indoor Localization with OS-ELM")
@@ -58,7 +63,7 @@ object OSELM {
   }
 
   def loadCSV(sc: SparkContext, file: String): DenseMatrix[Double] = {
-    val arr = sc.textFile(file).map(line => line.split(",").map(v => v.toDouble)).collect()
+    val arr = sc.textFile(file).map(line => line.split(",").map(v => v.toDouble)).collect() // TODO: consider whether this `.collect()` call is necessary
 
     val dim = arr.head.length
     val l = arr.length
@@ -72,7 +77,7 @@ object OSELM {
 
     rangeRow.foreach(i => {
       rangeCol.foreach(j => {
-        m(i, j) = (m(i, j) * (maxM(j) - minM(j))) + minM(j)
+        m(i, j) = (m(i, j) * (maxM(j) - minM(j))) + minM(j) // TODO: consider finding a way to use `.map()` here
       })
     })
 
