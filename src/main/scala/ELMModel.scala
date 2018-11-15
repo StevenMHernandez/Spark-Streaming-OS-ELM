@@ -3,9 +3,10 @@ import org.apache.spark.ml.Model
 import org.apache.spark.ml.param._
 import org.apache.spark.ml.util._
 import org.apache.spark.sql._
-import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
+
+import scala.collection.mutable
 
 class ELMModel(
                 val a: DenseMatrix[Double],
@@ -16,19 +17,21 @@ class ELMModel(
                 val minX: DenseVector[Double],
                 val maxY: DenseVector[Double],
                 val minY: DenseVector[Double]
-              ) extends Model[ELMModel] with ELMTraits {
+              ) extends Model[ELMModel] with ELMTrait {
 
   override def transform(dataset: Dataset[_]): DataFrame = {
     val predictUDF = udf { (features: Any) =>
-      val arr = features.asInstanceOf[GenericRowWithSchema].toSeq.toArray
-        .map(x => x.asInstanceOf[String].toDouble)
+      val arr = features.asInstanceOf[mutable.WrappedArray[Double]].toArray
 
-      val (m, _, _) = normalizeMatrix(new DenseMatrix[Double](1, 5, arr), maxX, minX)
+      val l = 1
+      val dim = features.asInstanceOf[mutable.WrappedArray[Double]].size
+
+      val (m, _, _) = normalizeMatrix(new DenseMatrix[Double](l, dim, arr), maxX, minX)
 
       predict(m)
     }
 
-    dataset.withColumn("predictions", predictUDF(struct(dataset.columns.map(dataset(_)): _*)))
+    dataset.withColumn("predictions", predictUDF(col("input")))
   }
 
   protected def predict(features: DenseMatrix[Double]): Array[Double] = {

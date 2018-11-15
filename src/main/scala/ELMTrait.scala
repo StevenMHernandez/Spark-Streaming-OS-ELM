@@ -1,7 +1,7 @@
 import breeze.linalg.{*, DenseMatrix, DenseVector, max, min}
 import breeze.numerics.sigmoid
 
-trait ELMTraits {
+trait ELMTrait {
   def G(a: DenseVector[Double], b: Double, x: DenseVector[Double]) = {
     sigmoid(a.t * x + b)
 //    signum(a.t * x + b)

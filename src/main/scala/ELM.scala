@@ -6,8 +6,10 @@ import org.apache.spark.ml.util._
 import org.apache.spark.sql._
 import org.apache.spark.sql.types._
 
-class ELM(override val uid: String) extends Estimator[ELMModel] with ELMTraits {
-  var numHiddenNodes = 50
+import scala.collection.mutable
+
+class ELM(override val uid: String) extends Estimator[ELMModel] with ELMTrait {
+  var numHiddenNodes = 100
 
   def this() = this(Identifiable.randomUID("elm"))
 
@@ -19,22 +21,24 @@ class ELM(override val uid: String) extends Estimator[ELMModel] with ELMTraits {
     schema
   }
 
-  def makeDenseMatrix(l: Int, dim: Int, x: Array[Row]): DenseMatrix[Double] = {
-    new DenseMatrix[Double](l, dim, x.map(_.toSeq.toArray).flatMap(x => x).map(x => x.asInstanceOf[String].toDouble), 0, dim, true)
+  def datasetToDenseMatrix(dataset: Dataset[Row]): DenseMatrix[Double] = {
+    val l = dataset.count().toInt
+    val dim = dataset.head()(0).asInstanceOf[mutable.WrappedArray[Double]].size
+
+    val arr = dataset.collect()
+      .flatMap(_.toSeq.head.asInstanceOf[mutable.WrappedArray[Double]].toArray.asInstanceOf[Array[Double]])
+
+    new DenseMatrix[Double](l, dim, arr, 0, dim, true)
   }
 
   override def fit(dataset: Dataset[_]): ELMModel = {
-    val input = dataset.select("_c0", "_c1", "_c2", "_c3", "_c4").collect()
-    val output = dataset.select("_c5", "_c6").collect()
+    val input = dataset.select("input")
+    val output = dataset.select("output")
 
-    val l = input.length
-    val dimX = input.head.length
-    val dimY = output.head.length
+    val (inputMatrix, maxX, minX) = normalizeMatrix(datasetToDenseMatrix(input))
+    val (outputMatrix, maxY, minY) = normalizeMatrix(datasetToDenseMatrix(output))
 
-    val (inputMatrix, maxX, minX) = normalizeMatrix(makeDenseMatrix(l, dimX, input))
-    val (outputMatrix, maxY, minY) = normalizeMatrix(makeDenseMatrix(l, dimY, output))
-
-    val n = dimX
+    val n = inputMatrix.cols
     val T = outputMatrix
 
     val a = DenseMatrix.rand(numHiddenNodes, n, Rand.gaussian)
