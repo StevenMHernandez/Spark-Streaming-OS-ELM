@@ -1,5 +1,7 @@
 import java.util.Date
 
+import org.apache.spark.mllib.evaluation.RegressionMetrics
+import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.expressions.UserDefinedFunction
 import org.apache.spark.sql.functions.udf
 
@@ -17,5 +19,18 @@ object functions {
 
     val diff = (end - start).toFloat / 1000
     println(s"$msg ${diff}s")
+  }
+
+  def evaluate(predictions: DataFrame): Unit = {
+    val df = predictions.select("actualX", "predictionX").rdd
+      .map(x => (x(0).asInstanceOf[Double], x(1).asInstanceOf[Double]))
+
+    val metric = new RegressionMetrics(df, false)
+
+    println("explainedVariance", metric.explainedVariance)
+    println("meanAbsoluteError", metric.meanAbsoluteError)
+    println("meanSquaredError", metric.meanSquaredError)
+    println("r2", metric.r2)
+    println("rootMeanSquaredError", metric.rootMeanSquaredError)
   }
 }

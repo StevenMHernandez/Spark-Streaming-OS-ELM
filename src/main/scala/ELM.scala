@@ -32,6 +32,10 @@ class ELM(override val uid: String) extends Estimator[ELMModel] with ELMTrait {
   }
 
   override def fit(dataset: Dataset[_]): ELMModel = {
+    batchLearn(dataset)
+  }
+
+  def batchLearn(dataset: Dataset[_]): ELMModel = {
     val input = dataset.select("input")
     val output = dataset.select("output")
 
@@ -49,7 +53,7 @@ class ELM(override val uid: String) extends Estimator[ELMModel] with ELMTrait {
     val P_0 = pinv(K_0)
     val beta = P_0 * H.t * T
 
-    new ELMModel(a, bias, beta, "sig", maxX, minX, maxY, minY)
+    new ELMModel(a, bias, beta, K_0, "sig", maxX, minX, maxY, minY)
   }
 
   def setHiddenNodes(i: Int): ELM = {

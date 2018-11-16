@@ -5,7 +5,6 @@ import org.apache.spark.sql.functions.{udf, _}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object Main {
-
   def main(args: Array[String]): Unit = {
     Logger.getLogger("org").setLevel(Level.OFF)
     Logger.getLogger("akka").setLevel(Level.OFF)
@@ -39,13 +38,53 @@ object Main {
       .withColumn("output", featuresUDF(struct(testing.select("_c5", "_c6").columns.map(testing(_)): _*)))
       .select("input", "output")
 
-    val elm = new ELM()
-      .setHiddenNodes(50)
+    val elm = new OSELM()
+      .setHiddenNodes(5)
 
     var model: ELMModel = null
     var predictions: DataFrame = null
 
     time("Training Time:", {
+      println("got it!")
+      model = elm.fit(training.limit(5))
+    })
+
+    time("Testing Time:", {
+      predictions = model.transform(testing)
+        .withColumn("actualX", getNth(0)(col("output")))
+        .withColumn("actualY", getNth(1)(col("output")))
+        .withColumn("predictionX", getNth(0)(col("predictions")))
+        .withColumn("predictionY", getNth(1)(col("predictions")))
+        .select("actualX", "actualY", "predictionX", "predictionY")
+      predictions.collect()
+    })
+
+    evaluate(predictions)
+
+    predictions.show()
+
+
+    time("Incremental Training Time:", {
+      println("got it!")
+      model = elm.fit(training.limit(10))
+    })
+
+    time("Testing Time:", {
+      predictions = model.transform(testing)
+        .withColumn("actualX", getNth(0)(col("output")))
+        .withColumn("actualY", getNth(1)(col("output")))
+        .withColumn("predictionX", getNth(0)(col("predictions")))
+        .withColumn("predictionY", getNth(1)(col("predictions")))
+        .select("actualX", "actualY", "predictionX", "predictionY")
+      predictions.collect()
+    })
+
+    evaluate(predictions)
+
+    predictions.show()
+
+
+    time("Incremental Training Time:", {
       println("got it!")
       model = elm.fit(training)
     })
@@ -59,6 +98,8 @@ object Main {
         .select("actualX", "actualY", "predictionX", "predictionY")
       predictions.collect()
     })
+
+    evaluate(predictions)
 
     predictions.show()
   }
