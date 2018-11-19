@@ -40,6 +40,7 @@ object Main {
 
     val elm = new OSELM()
       .setHiddenNodes(5)
+      .setActivationFunction(ELM.SIGMOID)
 
     var model: ELMModel = null
     var predictions: DataFrame = null

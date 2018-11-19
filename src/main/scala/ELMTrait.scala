@@ -1,11 +1,19 @@
 import breeze.linalg.{*, DenseMatrix, DenseVector, max, min}
-import breeze.numerics.sigmoid
+import breeze.numerics.{sigmoid, signum, tanh}
+import org.apache.spark.SparkException
 
 trait ELMTrait {
-  def G(a: DenseVector[Double], b: Double, x: DenseVector[Double]) = {
-    sigmoid(a.t * x + b)
-//    signum(a.t * x + b)
-//    tanh(a.t * x + b)
+  var activationFunction: String = ELM.SIGMOID
+
+  def G(activationFunction: String, a: DenseVector[Double], b: Double, x: DenseVector[Double]) = {
+    val in = a.t * x + b
+
+    activationFunction match {
+      case ELM.SIGMOID => sigmoid(in)
+      case ELM.SIGNUM => signum(in)
+      case ELM.TANH => tanh(in)
+      case _ => throw new SparkException(s"Unknown ELM Activation Function: '$activationFunction'")
+    }
   }
 
   def buildHiddenLayer(a: DenseMatrix[Double], bias: DenseVector[Double], input: DenseMatrix[Double]): DenseMatrix[Double] = {
@@ -19,7 +27,7 @@ trait ELMTrait {
 
     rangeInputs.foreach(x => {
       rangeHiddenLayers.foreach(y => {
-        H(x, y) = G(a(y, ::).t, bias(y), input(x, ::).t)
+        H(x, y) = G(activationFunction, a(y, ::).t, bias(y), input(x, ::).t)
       })
     })
 

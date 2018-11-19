@@ -8,6 +8,12 @@ import org.apache.spark.sql.types._
 
 import scala.collection.mutable
 
+object ELM {
+  val SIGMOID = "sig"
+  val SIGNUM = "sign"
+  val TANH = "tanh"
+}
+
 class ELM(override val uid: String) extends Estimator[ELMModel] with ELMTrait {
   var numHiddenNodes = 100
 
@@ -58,6 +64,11 @@ class ELM(override val uid: String) extends Estimator[ELMModel] with ELMTrait {
 
   def setHiddenNodes(i: Int): ELM = {
     numHiddenNodes = i
+    this
+  }
+
+  def setActivationFunction(af: String): ELM = {
+    activationFunction = af
     this
   }
 }
