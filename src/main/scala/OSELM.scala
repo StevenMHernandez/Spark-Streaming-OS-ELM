@@ -30,11 +30,11 @@ class OSELM(override val uid: String) extends ELM {
     val a = model.a
     val bias = model.bias
 
-    val H_k1 = buildHiddenLayer(a, bias, inputMatrix)
+    val H_k1 = buildHiddenLayer(activationFunction, a, bias, inputMatrix)
 
     val K_k1 = model.K + H_k1.t * H_k1
     val beta = model.beta + pinv(K_k1) * H_k1.t * (T_k1 - H_k1 * model.beta)
 
-    new ELMModel(a, bias, beta, K_k1, "sig", maxX, minX, maxY, minY)
+    new ELMModel(a, bias, beta, K_k1, activationFunction, maxX, minX, maxY, minY)
   }
 }

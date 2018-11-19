@@ -9,12 +9,13 @@ import org.apache.spark.sql.types._
 import scala.collection.mutable
 
 object ELM {
-  val SIGMOID = "sig"
+  val SIGMOID = "sigm"
   val SIGNUM = "sign"
   val TANH = "tanh"
 }
 
 class ELM(override val uid: String) extends Estimator[ELMModel] with ELMTrait {
+  var activationFunction: String = ELM.SIGMOID
   var numHiddenNodes = 100
 
   def this() = this(Identifiable.randomUID("elm"))
@@ -54,20 +55,20 @@ class ELM(override val uid: String) extends Estimator[ELMModel] with ELMTrait {
     val a = DenseMatrix.rand(numHiddenNodes, n, Rand.gaussian)
     val bias = DenseVector.rand(numHiddenNodes, Rand.gaussian)
 
-    val H = buildHiddenLayer(a, bias, inputMatrix)
+    val H = buildHiddenLayer(activationFunction, a, bias, inputMatrix)
     val K_0 = H.t * H
     val P_0 = pinv(K_0)
     val beta = P_0 * H.t * T
 
-    new ELMModel(a, bias, beta, K_0, "sig", maxX, minX, maxY, minY)
+    new ELMModel(a, bias, beta, K_0, activationFunction, maxX, minX, maxY, minY)
   }
 
-  def setHiddenNodes(i: Int): ELM = {
+  def setHiddenNodes(i: Int): this.type = {
     numHiddenNodes = i
     this
   }
 
-  def setActivationFunction(af: String): ELM = {
+  def setActivationFunction(af: String): this.type = {
     activationFunction = af
     this
   }

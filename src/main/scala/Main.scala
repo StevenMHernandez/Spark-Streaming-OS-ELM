@@ -15,7 +15,7 @@ object Main {
       .master("local[*]")
       .getOrCreate()
 
-    val featuresUDF = udf { (features: Any) =>
+    val featuresUDF = udf { features: Any =>
       features.asInstanceOf[GenericRowWithSchema].toSeq.toArray
         .map(x => x.asInstanceOf[String].toDouble)
     }

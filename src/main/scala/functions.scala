@@ -8,7 +8,7 @@ import org.apache.spark.sql.functions.udf
 import scala.collection.mutable
 
 object functions {
-  def getNth(n: Int): UserDefinedFunction = udf { (prediction: Any) =>
+  def getNth(n: Int): UserDefinedFunction = udf { prediction: Any =>
     prediction.asInstanceOf[mutable.WrappedArray[Double]](n)
   }
 

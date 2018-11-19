@@ -13,7 +13,7 @@ class ELMModel(
                 val bias: DenseVector[Double],
                 val beta: DenseMatrix[Double],
                 val K: DenseMatrix[Double],
-                val activationFunctionType: String,
+                val activationFunction: String,
                 val maxX: DenseVector[Double],
                 val minX: DenseVector[Double],
                 val maxY: DenseVector[Double],
@@ -21,7 +21,7 @@ class ELMModel(
               ) extends Model[ELMModel] with ELMTrait {
 
   override def transform(dataset: Dataset[_]): DataFrame = {
-    val predictUDF = udf { (features: Any) =>
+    val predictUDF = udf { features: Any =>
       val arr = features.asInstanceOf[mutable.WrappedArray[Double]].toArray
 
       val l = 1
@@ -36,7 +36,7 @@ class ELMModel(
   }
 
   protected def predict(features: DenseMatrix[Double]): Array[Double] = {
-    val output = buildHiddenLayer(a, bias, features) * beta
+    val output = buildHiddenLayer(activationFunction, a, bias, features) * beta
     denormalizeMatrix(output, maxY, minY).toArray
   }
 

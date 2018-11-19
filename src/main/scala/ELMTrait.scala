@@ -3,8 +3,6 @@ import breeze.numerics.{sigmoid, signum, tanh}
 import org.apache.spark.SparkException
 
 trait ELMTrait {
-  var activationFunction: String = ELM.SIGMOID
-
   def G(activationFunction: String, a: DenseVector[Double], b: Double, x: DenseVector[Double]) = {
     val in = a.t * x + b
 
@@ -16,7 +14,7 @@ trait ELMTrait {
     }
   }
 
-  def buildHiddenLayer(a: DenseMatrix[Double], bias: DenseVector[Double], input: DenseMatrix[Double]): DenseMatrix[Double] = {
+  def buildHiddenLayer(activationFunction: String, a: DenseMatrix[Double], bias: DenseVector[Double], input: DenseMatrix[Double]): DenseMatrix[Double] = {
     val l = input.rows
     val num_hidden_nodes = a.rows
 
