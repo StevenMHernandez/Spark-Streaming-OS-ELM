@@ -24,5 +24,10 @@ libraryDependencies  ++= Seq(
 //  "org.scalanlp" %% "breeze-viz" % "0.13.2"
 )
 
+//libraryDependencies += "com.github.fommil.netlib" % "all" % "1.1.2"
+
+libraryDependencies += "com.holdenkarau" %% "spark-testing-base" % "2.3.1_0.10.0" % "test"
+
+parallelExecution in Test := false
 
 resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/"

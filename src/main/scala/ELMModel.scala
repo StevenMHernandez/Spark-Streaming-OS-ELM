@@ -35,6 +35,15 @@ class ELMModel(
     dataset.withColumn("predictions", predictUDF(col("input")))
   }
 
+  def transform(dataset: (Seq[Double], Seq[Double])): Seq[Double] = {
+    val l = 1
+    val dim = dataset._1.size
+
+    val (m, _, _) = normalizeMatrix(new DenseMatrix[Double](l, dim, dataset._1.toArray), maxX, minX)
+
+    predict(m)
+  }
+
   protected def predict(features: DenseMatrix[Double]): Array[Double] = {
     val output = buildHiddenLayer(activationFunction, a, bias, features) * beta
     denormalizeMatrix(output, maxY, minY).toArray
