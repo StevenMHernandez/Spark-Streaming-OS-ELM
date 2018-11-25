@@ -28,8 +28,7 @@ class ELM(override val uid: String) extends Estimator[ELMModel] with ELMTrait {
     schema
   }
 
-  def datasetToDenseMatrix(dataset: Dataset[Row]): DenseMatrix[Double] = {
-    val l = dataset.count().toInt
+  def datasetToDenseMatrix(dataset: Dataset[Row], l: Int): DenseMatrix[Double] = {
     val dim = dataset.head()(0).asInstanceOf[mutable.WrappedArray[Double]].size
 
     val arr = dataset.collect()
@@ -43,11 +42,15 @@ class ELM(override val uid: String) extends Estimator[ELMModel] with ELMTrait {
   }
 
   def batchLearn(dataset: Dataset[_]): ELMModel = {
+    val l = dataset.collect().length
+
     val input = dataset.select("input")
     val output = dataset.select("output")
 
-    val (inputMatrix, maxX, minX) = normalizeMatrix(datasetToDenseMatrix(input))
-    val (outputMatrix, maxY, minY) = normalizeMatrix(datasetToDenseMatrix(output))
+    val inM = datasetToDenseMatrix(input, l)
+    val outM = datasetToDenseMatrix(output, l)
+    val (inputMatrix, maxX, minX) = normalizeMatrix(inM)
+    val (outputMatrix, maxY, minY) = normalizeMatrix(outM)
 
     val n = inputMatrix.cols
     val T = outputMatrix

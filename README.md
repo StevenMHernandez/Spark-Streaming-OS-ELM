@@ -1,10 +1,12 @@
 # ELM and OS-ELM for Apache Spark MLlib (and Spark Streaming)
 
-The goal of this project is to develop both an [Extreme Learning Machine (ELM)]() and [Online 
-Sequential Extreme Learning Machine (OS-ELM)]() MLlib implementation for Apache Spark. Specific 
-application of these algorithms is for use in Fingerprint-based Indoor Localization which uses 
-ambient radio signal strengths such as the strength of any nearby Wi-Fi routers to predict the 
-location or (x,y) coordinates of a device as can be see from [Zou et al.]() While this use-case is 
+The goal of this project is to develop both an 
+[Extreme Learning Machine (ELM)](https://ieeexplore.ieee.org/document/1380068) and 
+[Online Sequential Extreme Learning Machine (OS-ELM)](https://ieeexplore.ieee.org/document/4012031) 
+MLlib implementation for Apache Spark. Specific application of these algorithms is for use in 
+Fingerprint-based Indoor Localization which uses ambient radio signal strengths such as the 
+strength of any nearby Wi-Fi routers to predict the location or (x,y) coordinates of a device as 
+can be see from [Zou et al.](https://www.ncbi.nlm.nih.gov/pubmed/25599427) While this use-case is 
 the primary focus for this work, the ELM and OS-ELM implementations are generic enough for any use 
 case where a Spark MLlib algorithm would be used.
 

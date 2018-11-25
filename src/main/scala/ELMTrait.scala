@@ -23,8 +23,8 @@ trait ELMTrait {
 
     val H = DenseMatrix.zeros[Double](l, num_hidden_nodes)
 
-    rangeInputs.foreach(x => {
-      rangeHiddenLayers.foreach(y => {
+    rangeInputs.par.foreach(x => {
+      rangeHiddenLayers.par.foreach(y => {
         H(x, y) = G(activationFunction, a(y, ::).t, bias(y), input(x, ::).t)
       })
     })
@@ -43,8 +43,8 @@ trait ELMTrait {
     val rangeCol = 0 until m.cols
     val rangeRow = 0 until m.rows
 
-    rangeRow.foreach(i => {
-      rangeCol.foreach(j => {
+    rangeRow.par.foreach(i => {
+      rangeCol.par.foreach(j => {
         m(i, j) = (m(i, j) - minM(j)) / (maxM(j) - minM(j))
       })
     })
@@ -56,8 +56,8 @@ trait ELMTrait {
     val rangeCol = 0 until m.cols
     val rangeRow = 0 until m.rows
 
-    rangeRow.foreach(i => {
-      rangeCol.foreach(j => {
+    rangeRow.par.foreach(i => {
+      rangeCol.par.foreach(j => {
         m(i, j) = (m(i, j) * (maxM(j) - minM(j))) + minM(j)
       })
     })

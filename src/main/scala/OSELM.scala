@@ -18,13 +18,14 @@ class OSELM(override val uid: String) extends ELM {
   }
 
   def incrementalLearn(dataset: Dataset[_]): ELMModel = {
+    val l = dataset.collect().length
+
     val input = dataset.select("input")
     val output = dataset.select("output")
 
-    val (inputMatrix, maxX, minX) = normalizeMatrix(datasetToDenseMatrix(input))
-    val (outputMatrix, maxY, minY) = normalizeMatrix(datasetToDenseMatrix(output))
+    val (inputMatrix, maxX, minX) = normalizeMatrix(datasetToDenseMatrix(input, l))
+    val (outputMatrix, maxY, minY) = normalizeMatrix(datasetToDenseMatrix(output, l))
 
-    val n = inputMatrix.cols
     val T_k1 = outputMatrix
 
     val a = model.a
