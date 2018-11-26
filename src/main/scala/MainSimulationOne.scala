@@ -19,21 +19,21 @@ object MainSimulationOne {
       .getOrCreate()
 
     var training1 = withInputColumns(spark.read.format("csv")
-      .load("src/main/resources/train_XY_1.csv"))
+      .load("src/main/resources/simulationOne/train_XY_1.csv"))
     var training2 = withInputColumns(spark.read.format("csv")
-      .load("src/main/resources/train_XY_2.csv"))
+      .load("src/main/resources/simulationOne/train_XY_2.csv"))
     var training3 = withInputColumns(spark.read.format("csv")
-      .load("src/main/resources/train_XY_3.csv"))
+      .load("src/main/resources/simulationOne/train_XY_3.csv"))
 
     var testing1 = withInputColumns(spark.read.format("csv")
-      .load("src/main/resources/test_XY_1.csv"))
+      .load("src/main/resources/simulationOne/test_XY_1.csv"))
     var testing2 = withInputColumns(spark.read.format("csv")
-      .load("src/main/resources/test_XY_2.csv"))
+      .load("src/main/resources/simulationOne/test_XY_2.csv"))
     var testing3 = withInputColumns(spark.read.format("csv")
-      .load("src/main/resources/test_XY_3.csv"))
+      .load("src/main/resources/simulationOne/test_XY_3.csv"))
 
     var training_small = withInputColumns(spark.read.format("csv")
-      .load("src/main/resources/train_small.csv"))
+      .load("src/main/resources/simulationOne/train_small.csv"))
 
     val oselm = new OSELM()
       .setHiddenNodes(380)
@@ -42,15 +42,15 @@ object MainSimulationOne {
     var model: ELMModel = null
     var predictions: DataFrame = null
 
-    //    time(s"Train on some initial data to allow spark to 'warm-up': ", {
-    //      model = oselm.fit(training_small)
-    //    })
+//    time("Train on some initial data to allow spark to 'warm-up': ", {
+//      model = oselm.fit(training_small)
+//    })
 
     /*
      * Begin Running Simulation
      */
     Array((training1, testing1), (training2, testing2), (training3, testing3)).foreach({ dfs =>
-      time(s"Incremental Training Time:", {
+      time("Training Time:", {
         model = oselm.fit(dfs._1)
       })
 

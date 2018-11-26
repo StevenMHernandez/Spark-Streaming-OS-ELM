@@ -23,12 +23,17 @@ AP = [
 ];
 
 k = NUM_SAMPLES_PER_TRAINING_POINT
-[Tr1_signals, Tr1_actualSmall, Tr1_actual] = makeNWithKSamples(NUM_TRAINING_POINTS_1, k, 2.0, AP);
-[Tr2_signals, Tr2_actualSmall, Tr2_actual] = makeNWithKSamples(NUM_TRAINING_POINTS_2, k, 2.0, AP);
-[Tr3_signals, Tr3_actualSmall, Tr3_actual] = makeNWithKSamples(NUM_TESTING_POINTS_3, k, 2.0, AP);
-[Te1_signals, Te1_actualSmall, Te1_actual] = makeNWithKSamples(NUM_TESTING_POINTS_1, k, 2.0, AP);
-[Te2_signals, Te2_actualSmall, Te2_actual] = makeNWithKSamples(NUM_TESTING_POINTS_2, k, 2.0, AP);
-[Te3_signals, Te3_actualSmall, Te3_actual] = makeNWithKSamples(NUM_TESTING_POINTS_3, k, 2.0, AP);
+
+SIGNAL_ALPHA_1 = 2.0%2.0%
+SIGNAL_ALPHA_2 = 2.5%2.0%
+SIGNAL_ALPHA_3 = 3.5%2.0%
+
+[Tr1_signals, Tr1_actualSmall, Tr1_actual] = makeNWithKSamples(NUM_TRAINING_POINTS_1, k, SIGNAL_ALPHA_1, AP);
+[Tr2_signals, Tr2_actualSmall, Tr2_actual] = makeNWithKSamples(NUM_TRAINING_POINTS_2, k, SIGNAL_ALPHA_2, AP);
+[Tr3_signals, Tr3_actualSmall, Tr3_actual] = makeNWithKSamples(NUM_TRAINING_POINTS_3, k, SIGNAL_ALPHA_3, AP);
+[Te1_signals, Te1_actualSmall, Te1_actual] = makeNWithKSamples(NUM_TESTING_POINTS_1, k, SIGNAL_ALPHA_1, AP);
+[Te2_signals, Te2_actualSmall, Te2_actual] = makeNWithKSamples(NUM_TESTING_POINTS_2, k, SIGNAL_ALPHA_2, AP);
+[Te3_signals, Te3_actualSmall, Te3_actual] = makeNWithKSamples(NUM_TESTING_POINTS_3, k, SIGNAL_ALPHA_3, AP);
 
 APplots = plot(AP(:,1), AP(:,2), 'k*');
 TrainingPlotsOne = plot(Tr1_actualSmall(:,1), Tr1_actualSmall(:,2), 'o');
@@ -66,13 +71,13 @@ legend([
 
 hold off;
 
-csvwrite('output/train_small.csv', [Tr1_signals([1,300],:) Tr1_actual([1,300],:)])
-csvwrite('output/train_XY_1.csv', [Tr1_signals Tr1_actual])
-csvwrite('output/train_XY_2.csv', [Tr2_signals Tr2_actual])
-csvwrite('output/train_XY_3.csv', [Tr3_signals Tr3_actual])
-csvwrite('output/test_XY_1.csv', [Te1_signals Te1_actual])
-csvwrite('output/test_XY_2.csv', [Te2_signals Te2_actual])
-csvwrite('output/test_XY_3.csv', [Te3_signals Te3_actual])
+csvwrite('output/simulationOne/train_small.csv', [Tr1_signals([1,300],:) Tr1_actual([1,300],:)])
+csvwrite('output/simulationOne/train_XY_1.csv', [Tr1_signals Tr1_actual])
+csvwrite('output/simulationOne/train_XY_2.csv', [Tr2_signals Tr2_actual])
+csvwrite('output/simulationOne/train_XY_3.csv', [Tr3_signals Tr3_actual])
+csvwrite('output/simulationOne/test_XY_1.csv', [Te1_signals Te1_actual])
+csvwrite('output/simulationOne/test_XY_2.csv', [Te2_signals Te2_actual])
+csvwrite('output/simulationOne/test_XY_3.csv', [Te3_signals Te3_actual])
 
 function signals = calculateSignals(AP, input, alpha)
     NUM_ACCESS_POINTS = length(AP);
@@ -93,7 +98,7 @@ function [signal, actualLocationSmall, actualLocation] = makeNWithKSamples(n, k,
     actualLocation = zeros(n * k, 2);
     output = zeros(n * k, 2);
 
-    for p = 0:n
+    for p = 0:n-1
         selectedRandomLocation = rand(1, 2) * 20;
         actualLocationSmall(p + 1, :) = selectedRandomLocation;
         for tr = 1:k

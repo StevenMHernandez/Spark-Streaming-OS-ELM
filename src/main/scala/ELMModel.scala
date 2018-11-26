@@ -13,6 +13,7 @@ class ELMModel(
                 val bias: DenseVector[Double],
                 val beta: DenseMatrix[Double],
                 val K: DenseMatrix[Double],
+                val P: DenseMatrix[Double],
                 val activationFunction: String,
                 val maxX: DenseVector[Double],
                 val minX: DenseVector[Double],

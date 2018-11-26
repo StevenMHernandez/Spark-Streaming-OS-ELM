@@ -63,7 +63,7 @@ class ELM(override val uid: String) extends Estimator[ELMModel] with ELMTrait {
     val P_0 = pinv(K_0)
     val beta = P_0 * H.t * T
 
-    new ELMModel(a, bias, beta, K_0, activationFunction, maxX, minX, maxY, minY)
+    new ELMModel(a, bias, beta, K_0, P_0, activationFunction, maxX, minX, maxY, minY)
   }
 
   def setHiddenNodes(i: Int): this.type = {
