@@ -9,16 +9,15 @@ object StreamingMain {
     val trn = "src/main/resources/training"
     val tst = "src/main/resources/testing"
 
-
     val trainingData = ssc.textFileStream(trn).map(SimpleCsvParser.parse)
       .map(x => (
-        Seq(x(0), x(1), x(2), x(3), x(4)),
-        Seq(x(5), x(6))
+        Seq(x(0), x(1), x(2), x(3)),
+        Seq(x(4), x(5))
       ))
     val testData = ssc.textFileStream(tst).map(SimpleCsvParser.parse)
       .map(x => (
-        Seq(x(0), x(1), x(2), x(3), x(4)),
-        Seq(x(5), x(6))
+        Seq(x(0), x(1), x(2), x(3)),
+        Seq(x(4), x(5))
       ))
 
     val model = new StreamingOSELM()

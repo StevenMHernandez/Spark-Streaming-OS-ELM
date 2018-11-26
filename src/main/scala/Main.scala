@@ -103,5 +103,7 @@ object Main {
     evaluate(predictions)
 
     predictions.show()
+
+    spark.stop()
   }
 }
