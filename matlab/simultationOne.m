@@ -6,11 +6,11 @@ hold on;
 
 NUM_ACCESS_POINTS = 4;
 
-NUM_SAMPLES_PER_TRAINING_POINT = 200;
+NUM_SAMPLES_PER_TRAINING_POINT = 1000;
 
-NUM_TRAINING_POINTS_1 = 10;
-NUM_TRAINING_POINTS_2 = 5;
-NUM_TRAINING_POINTS_3 = 5;
+NUM_TRAINING_POINTS_1 = 250;
+NUM_TRAINING_POINTS_2 = 250;
+NUM_TRAINING_POINTS_3 = 250;
 NUM_TESTING_POINTS_1 = 5;
 NUM_TESTING_POINTS_2 = 5;
 NUM_TESTING_POINTS_3 = 5;
@@ -35,14 +35,14 @@ SIGNAL_ALPHA_3 = 3.5%2.0%
 [Te2_signals, Te2_actualSmall, Te2_actual] = makeNWithKSamples(NUM_TESTING_POINTS_2, k, SIGNAL_ALPHA_2, AP);
 [Te3_signals, Te3_actualSmall, Te3_actual] = makeNWithKSamples(NUM_TESTING_POINTS_3, k, SIGNAL_ALPHA_3, AP);
 
-APplots = plot(AP(:,1), AP(:,2), 'k*');
-TrainingPlotsOne = plot(Tr1_actualSmall(:,1), Tr1_actualSmall(:,2), 'o');
-TrainingPlotsTwo = plot(Tr2_actualSmall(:,1), Tr2_actualSmall(:,2), 'o');
-TrainingPlotsThree = plot(Tr3_actualSmall(:,1), Tr3_actualSmall(:,2), 'o');
-TestingPlotsOne = plot(Te1_actualSmall(:,1), Te1_actualSmall(:,2), '^');
-TestingPlotsTwo = plot(Te2_actualSmall(:,1), Te2_actualSmall(:,2), '^');
-TestingPlotsThree = plot(Te3_actualSmall(:,1), Te3_actualSmall(:,2), '^');
-plot(AP(:,1), AP(:,2), 'k*'); % Again to plot it on top!
+% APplots = plot(AP(:,1), AP(:,2), 'k*');
+% TrainingPlotsOne = plot(Tr1_actualSmall(:,1), Tr1_actualSmall(:,2), 'o');
+% TrainingPlotsTwo = plot(Tr2_actualSmall(:,1), Tr2_actualSmall(:,2), 'o');
+% TrainingPlotsThree = plot(Tr3_actualSmall(:,1), Tr3_actualSmall(:,2), 'o');
+% TestingPlotsOne = plot(Te1_actualSmall(:,1), Te1_actualSmall(:,2), '^');
+% TestingPlotsTwo = plot(Te2_actualSmall(:,1), Te2_actualSmall(:,2), '^');
+% TestingPlotsThree = plot(Te3_actualSmall(:,1), Te3_actualSmall(:,2), '^');
+% plot(AP(:,1), AP(:,2), 'k*'); % Again to plot it on top!
 
 % Add labels to understand visually how far off we were!
 % k = 1:min(length(Te),length(predictions));
