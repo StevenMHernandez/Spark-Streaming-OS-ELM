@@ -21,18 +21,18 @@ class StreamingOSELMSpec extends FunSuite with StreamingActionBase {
     assert(oselm.model != null)
     assert(oselm.model.beta != null)
 
-    val firstItem = input: Seq[Seq[(Seq[Double], Seq[Double])]]
+    val inputStream = input: Seq[Seq[(Seq[Double], Seq[Double])]]
     val operationItem = oselm.predictOn: DStream[(Seq[Double], Seq[Double])] => DStream[Seq[Double]]
     val expectedItem = Seq(expected): Seq[Seq[Seq[Double]]]
 
     // Because this is ML, we won't necessarily know the exact value returned and we don't want to validate that here.
     // Instead, we want to just ensure we are receiving the correct number of values as output.
-    implicit val returnedElementsMustExistEquality: Equality[Seq[Double]] =
+    implicit val sameSizeEquality: Equality[Seq[Double]] =
       new Equality[Seq[Double]] {
         override def areEqual(a: Seq[Double], b: Any): Boolean =
           a.size == b.asInstanceOf[Seq[Double]].size
       }
 
-    testOperation[(Seq[Double], Seq[Double]), Seq[Double]](firstItem, operationItem, expectedItem)
+    testOperation[(Seq[Double], Seq[Double]), Seq[Double]](inputStream, operationItem, expectedItem)
   }
 }

@@ -8,10 +8,10 @@ class OSELM(override val uid: String) extends ELM {
   private var model: ELMModel = _
 
   override def fit(dataset: Dataset[_]): ELMModel = {
-    if (model != null) {
-      this.model = incrementalLearn(dataset)
-    } else {
+    if (model == null) {
       this.model = batchLearn(dataset)
+    } else {
+      this.model = incrementalLearn(dataset)
     }
 
     this.model
@@ -35,6 +35,7 @@ class OSELM(override val uid: String) extends ELM {
 
     val K_k1 = model.K + H_k1.t * H_k1
     val beta = model.beta + pinv(K_k1) * H_k1.t * (T_k1 - H_k1 * model.beta)
+
     new ELMModel(a, bias, beta, K_k1, null, activationFunction, maxX, minX, maxY, minY)
 
 //    val I = DenseMatrix.eye[Double](inputMatrix.rows)
